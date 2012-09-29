@@ -1,0 +1,107 @@
+{-# LANGUAGE DeriveDataTypeable #-}
+module Spy.Watcher
+(
+ spy
+,Format
+,plainFormat
+,Spy(..)
+) where
+
+import System.OSX.FSEvents
+import System.Console.CmdArgs
+import System.FilePath.GlobPattern
+import System.FilePath (splitDirectories, takeFileName)
+import Control.Monad (unless)
+import Control.Exception (bracket)
+import Data.Maybe (fromMaybe)
+import Data.Bits
+import Data.Word
+import Text.JSON
+
+data Format = Json | Plain deriving (Show, Eq, Data, Typeable)
+
+data Spy = Spy {
+     dir                :: FilePath
+    ,glob               :: Maybe GlobPattern
+    ,format             :: Maybe Format
+    ,recursive          :: Bool
+    ,hidden             :: Bool
+} deriving (Data,Typeable,Show)
+
+-- | Return the Plain format.
+plainFormat :: Format
+plainFormat = Plain
+
+-- | Register for FS events using the given Spy config.
+spy :: Spy -> IO String
+spy config = bracket
+  (eventStreamCreate [dir config] 1.0 True True True $ handleEvent config)
+  eventStreamDestroy
+  (\_ -> getLine)
+
+
+handleEvent :: Spy -> Event -> IO ()
+handleEvent config event =
+        unless (skipEvent config event) $
+        putStrLn $ (outputHandler $ fromMaybe Plain $ format config) event
+
+-- =================================================================================
+
+type Printer = (Event -> String)
+
+
+outputHandler :: Format -> Printer
+outputHandler Json  = \event -> encode $ toJSObject [
+    ("path", eventPath event),
+    ("id", show $ eventId event),
+    ("flags", show $ showEventFlags $ eventFlags event)]
+outputHandler Plain = eventPath
+
+
+-- | Skip events based on the configuration given
+skipEvent :: Spy -> Event -> Bool
+skipEvent config event = skipHidden || skipNonMatchingGlob
+    where skipHidden            = let includeHiddenfiles = hidden config
+                                  in not includeHiddenfiles && containsHiddenPathElement path
+          skipNonMatchingGlob   = maybe False (not . matchesFile path) $ glob config
+          path                  = eventPath event
+
+
+matchesFile :: FilePath -> GlobPattern -> Bool
+matchesFile path glob' = takeFileName path ~~ glob'
+
+
+containsHiddenPathElement :: FilePath -> Bool
+containsHiddenPathElement path = any isHidden paths
+                where paths = splitDirectories path
+                      isHidden name' = case name' of
+                                            (x:_)   -> x == '.'
+                                            _       -> False
+
+
+showEventFlags :: Word64 -> [String]
+showEventFlags fl = map fst . filter hasFlag $ flagList
+  where hasFlag (_,f) = fl .&. f /= 0
+
+
+flagList :: [(String, Word64)]
+flagList = [ ("MustScanSubDirs"   , 0x00000001)
+           , ("UserDropped"       , 0x00000002)
+           , ("KernelDropped"     , 0x00000004)
+           , ("EventIdsWrapped"   , 0x00000008)
+           , ("HistoryDone"       , 0x00000010)
+           , ("RootChanged"       , 0x00000020)
+           , ("Mount"             , 0x00000040)
+           , ("Unmount"           , 0x00000080)
+           , ("ItemCreated"       , 0x00000100)
+           , ("ItemRemoved"       , 0x00000200)
+           , ("ItemInodeMetaMod"  , 0x00000400)
+           , ("ItemRenamed"       , 0x00000800)
+           , ("ItemModified"      , 0x00001000)
+           , ("ItemFinderInfoMod" , 0x00002000)
+           , ("ItemChangeOwner"   , 0x00004000)
+           , ("ItemXattrMod"      , 0x00008000)
+           , ("ItemIsFile"        , 0x00010000)
+           , ("ItemIsDir"         , 0x00020000)
+           , ("ItemIsSymlink"     , 0x00040000)
+           ]
