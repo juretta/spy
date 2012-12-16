@@ -1,7 +1,7 @@
 Spy
 ===
 
-Spy is a compact file system watcher for Mac OS X based on hfsevent.
+Spy is a compact file system watcher for Mac OS X using the [File System Events API](https://developer.apple.com/library/mac/#documentation/Darwin/Conceptual/FSEvents_ProgGuide/Introduction/Introduction.html) via [hfsevents](https://github.com/luite/hfsevents).
 
 
 Usage
