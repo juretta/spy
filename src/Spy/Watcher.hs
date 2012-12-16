@@ -36,6 +36,7 @@ data Spy = Watch {
     ,glob               :: Maybe GlobPattern
     ,recursive          :: Bool
     ,hidden             :: Bool
+    ,notifyOnly         :: Bool
 } deriving (Data,Typeable,Show,Eq)
 
 -- | Return the Plain format.
@@ -53,10 +54,14 @@ spy config = bracket
 handleEvent :: Spy -> Event -> IO ()
 handleEvent config@Run{..} event =
         unless (skipEvent config event) $
-        runCommand command (Just (eventPath event)) >>=
+        runCommand command pathAsArg >>=
             \exit -> case exit of
                 ExitSuccess     -> return ()
                 ExitFailure i   -> hPrint stderr $ "Failed to execute " ++ command ++ " - exit code: " ++ show i
+        where pathAsArg = if notifyOnly then
+                            Nothing
+                            else (Just (eventPath event))
+
 handleEvent config@Watch{..} event =
         unless (skipEvent config event) $
         putStrLn $ (outputHandler $ fromMaybe Plain format) event

@@ -28,9 +28,10 @@ run :: Spy
 run = Run
     {recursive  = recurseOpts True
     ,hidden     = hiddenOpts False
-    ,command    = def           &= argPos 0  &= typ "CMD"
-    ,dir        = "."           &= argPos 1  &= typDir
-    ,glob       = Nothing       &= args      &= typ "GLOB"
+    ,command    = def           &= argPos 0                        &= typ "CMD"
+    ,dir        = "."           &= argPos 1                        &= typDir
+    ,glob       = Nothing       &= args                            &= typ "GLOB"
+    ,notifyOnly = False         &= name "n"  &= name "notify-only" &= typ "BOOL"
     }
     &= help "Run a command whenever a file in a directory changes"
 
