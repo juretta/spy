@@ -1,4 +1,5 @@
-{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE DeriveDataTypeable,RecordWildCards #-}
+
 module Spy.Watcher
 (
  spy
@@ -9,24 +10,33 @@ module Spy.Watcher
 
 import System.OSX.FSEvents
 import System.Console.CmdArgs
+import System.Cmd
+import System.Exit
+import System.IO (stderr, hPrint)
 import System.FilePath.GlobPattern
 import System.FilePath (splitDirectories, takeFileName)
 import Control.Monad (unless)
 import Control.Exception (bracket)
-import Data.Maybe (fromMaybe)
+import Data.Maybe (fromMaybe, maybeToList)
 import Data.Bits
 import Data.Word
 import Text.JSON
 
 data Format = Json | Plain deriving (Show, Eq, Data, Typeable)
 
-data Spy = Spy {
+data Spy = Watch {
      dir                :: FilePath
     ,glob               :: Maybe GlobPattern
     ,format             :: Maybe Format
     ,recursive          :: Bool
     ,hidden             :: Bool
-} deriving (Data,Typeable,Show)
+} | Run {
+     dir                :: FilePath
+    ,command            :: String
+    ,glob               :: Maybe GlobPattern
+    ,recursive          :: Bool
+    ,hidden             :: Bool
+} deriving (Data,Typeable,Show,Eq)
 
 -- | Return the Plain format.
 plainFormat :: Format
@@ -41,14 +51,29 @@ spy config = bracket
 
 
 handleEvent :: Spy -> Event -> IO ()
-handleEvent config event =
+handleEvent config@Run{..} event =
         unless (skipEvent config event) $
-        putStrLn $ (outputHandler $ fromMaybe Plain $ format config) event
+        runCommand command (Just (eventPath event)) >>=
+            \exit -> case exit of
+                ExitSuccess     -> return ()
+                ExitFailure i   -> hPrint stderr $ "Failed to execute " ++ command ++ " - exit code: " ++ show i
+handleEvent config@Watch{..} event =
+        unless (skipEvent config event) $
+        putStrLn $ (outputHandler $ fromMaybe Plain format) event
+
+-- =================================================================================
+
+runCommand :: Command -> Maybe FilePath -> IO ExitCode
+runCommand cmd maybePath = rawSystem p $ mergeArgs args'
+    where (p, args')            = case words cmd of
+                                    (x:xs) -> (x, xs)
+                                    _      -> ("", [])
+          mergeArgs defaultArgs = defaultArgs ++ maybeToList maybePath
 
 -- =================================================================================
 
 type Printer = (Event -> String)
-
+type Command = String
 
 outputHandler :: Format -> Printer
 outputHandler Json  = \event -> encode $ toJSObject [
