@@ -17,7 +17,7 @@ watch :: Spy
 watch = Watch
     {recursive  = recurseOpts True
     ,hidden     = hiddenOpts False
-    ,dir        = "."               &= argPos 0  &= typDir
+    ,dir        = "."               &= argPos 0  &= typ "FILE/DIR"
     ,format     = Just plainFormat  &= name "f"  &= help "Specify the output format ('json', 'plain')"
     ,glob       = Nothing           &= args &= typ "GLOB"
     }
@@ -29,7 +29,7 @@ run = Run
     {recursive  = recurseOpts True
     ,hidden     = hiddenOpts False
     ,command    = def           &= argPos 0                        &= typ "CMD"
-    ,dir        = "."           &= argPos 1                        &= typDir
+    ,dir        = "."           &= argPos 1                        &= typ "FILE/DIR"
     ,glob       = Nothing       &= args                            &= typ "GLOB"
     ,notifyOnly = False         &= name "n"  &= name "notify-only" &= typ "BOOL"
     }
