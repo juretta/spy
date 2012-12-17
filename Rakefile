@@ -76,6 +76,9 @@ task :bump_minor_version do
   # Update cabal file
   update_file("spy.cabal", /^version:.*$/, "version:            #{next_version}")
 
+  # Update download link
+  update_file("README.md", /spy-osx-x86_64-v(.*?).tar.gz/, "spy-osx-x86_64-v#{next_version}.tar.gz")
+
   # Commit and tag
   msg = "Bump version to #{next_version}"
   puts msg

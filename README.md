@@ -66,9 +66,9 @@ The binary distribution contains a 64bit binary compiled for Mac OS X > 10.7.
 
 Download the tarball and run "make install" to copy the binary and the man page into the correct target directories:
 
-    $> curl -OL http://..../tar.gz
-    $> tar xfz spy-1.0.tar.gz
-    $> cd spy-1.0
+    $> curl -OL https://bitbucket.org/ssaasen/spy/downloads/spy-osx-x86_64-v0.1.tar.gz
+    $> tar xfz spy-osx-x86_64-v0.1.tar.gz
+    $> cd spy
     $> make install
 
 The user manual should now be available via `man spy` and the `spy` executable should be on your `$PATH`.
