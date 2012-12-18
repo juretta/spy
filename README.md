@@ -27,7 +27,7 @@ It's possible to watch a single file (this obviously only shows changes to that 
 
 The default format is the full path to the modified file followed by a newline. To make it easier to parse the output, the `--format=json` changes the output to be printed formatted as a JSON object (again followed by a newline).
 
-    $> spy --format=json watch .
+    $> spy watch --format=json .
     {"path": "path/to/modified/file", "flags": ["ItemModified"], "id": 123143234}
 
 For directories the following options apply:
