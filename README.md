@@ -74,8 +74,18 @@ The user manual should now be available via `man spy` and the `spy` executable s
 Source distribution
 -------------------
 
-To install spy from source you need the Haskell platform installed and cabal-install available on your $PATH:
+You need the Haskell platform installed and cabal-install available on your $PATH.
 
+To install spy from hackage simply run:
+
+    $> cabal install spy
+
+Done!
+
+To install spy from git you need the Haskell platform installed and cabal-install available on your $PATH:
+
+    $> git@bitbucket.org:ssaasen/spy.git
+    $> cd spy
     $> cabal install --only-dependencies
     $> cabal configure
     $> cabal build
