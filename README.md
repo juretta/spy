@@ -63,8 +63,8 @@ The binary distribution contains a 64bit binary compiled for Mac OS X > 10.7.
 
 Download the tarball and run "make install" to copy the binary and the man page into the correct target directories:
 
-    $> curl -OL https://bitbucket.org/ssaasen/spy/downloads/spy-osx-x86_64-v0.3.tar.gz
-    $> tar xfz spy-osx-x86_64-v0.3.tar.gz
+    $> curl -OL https://bitbucket.org/ssaasen/spy/downloads/spy-osx-x86_64-v0.4.tar.gz
+    $> tar xfz spy-osx-x86_64-v0.4.tar.gz
     $> cd spy
     $> make install
 
