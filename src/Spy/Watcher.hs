@@ -22,8 +22,10 @@ import Data.Bits
 import Data.Word
 import Text.JSON
 
+-- | The output format when Spy prints out changes to STDOUT
 data Format = Json | Plain deriving (Show, Eq, Data, Typeable)
 
+-- | Spy run modes.
 data Spy = Watch {
      dir                :: FilePath
     ,glob               :: Maybe GlobPattern
@@ -50,7 +52,7 @@ spy config = bracket
   eventStreamDestroy
   (\_ -> getLine)
 
-
+-- | Handle the FS event based on the current Spy run configuration
 handleEvent :: Spy -> Event -> IO ()
 handleEvent config@Run{..} event =
         unless (skipEvent config event) $
@@ -60,7 +62,7 @@ handleEvent config@Run{..} event =
                 ExitFailure i   -> hPrint stderr $ "Failed to execute " ++ command ++ " - exit code: " ++ show i
         where pathAsArg = if notifyOnly then
                             Nothing
-                            else (Just (eventPath event))
+                            else Just (eventPath event)
 
 handleEvent config@Watch{..} event =
         unless (skipEvent config event) $
