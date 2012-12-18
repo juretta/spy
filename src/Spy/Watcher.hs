@@ -84,10 +84,10 @@ type Printer = (Event -> String)
 type Command = String
 
 outputHandler :: Format -> Printer
-outputHandler Json  = \event -> encode $ toJSObject [
-    ("path", eventPath event),
-    ("id", show $ eventId event),
-    ("flags", show $ showEventFlags $ eventFlags event)]
+outputHandler Json  = \event -> encode $ makeObj [
+    ("path", showJSON $ eventPath event),
+    ("id", showJSON $ eventId event),
+    ("flags", showJSONs $ showEventFlags $ eventFlags event)]
 outputHandler Plain = eventPath
 
 
