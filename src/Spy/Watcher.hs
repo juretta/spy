@@ -110,7 +110,10 @@ containsHiddenPathElement path = any isHidden paths
                                             (x:_)   -> x == '.'
                                             _       -> False
 
-
+-- =================================================================================
+-- The following code is taken from:
+-- https://github.com/luite/hfsevents/blob/master/test/trace.hs
+-- Copyright (c) 2012, Luite Stegeman
 showEventFlags :: Word64 -> [String]
 showEventFlags fl = map fst . filter hasFlag $ flagList
   where hasFlag (_,f) = fl .&. f /= 0
