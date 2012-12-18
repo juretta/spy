@@ -3,12 +3,12 @@ version:            0.2
 license:            BSD3
 license-file:       LICENSE
 author:             Stefan Saasen
-maintainer:         Stefan Saasen
-copyright:          Stefan Saasen
-synopsis:           A skeleton for creating haskell packages
-category:           Development
-description:        A skeleton for creating haskell packages
+maintainer:         stefan@saasen.me
+synopsis:           A compact file system watcher for Mac OS X
+category:           Apple, Development
+description:        Spy can be used to watch for file changes and to either report the modified files or run a command if files change. It can be used to trigger compilation, to run tests or start a deployment.
 homepage:           https://bitbucket.org/ssaasen/spy
+bug-reports:        https://bitbucket.org/ssaasen/spy/issues
 cabal-version:      >= 1.8
 build-type:         Simple
 extra-source-files: README.md
