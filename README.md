@@ -53,6 +53,9 @@ If the command to be executed does not expect any (additional) arguments the `--
 
     $> spy run --notify-only "rake test" .
 
+Compiling the spy sources is done using the following invocation:
+
+    $> spy run --notify-only "cabal build" src/ "*.hs"
 
 Installation
 ============
