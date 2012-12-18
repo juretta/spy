@@ -1,6 +1,6 @@
 % SPY(1) Spy User Manuals
 % Stefan Saasen
-% July, 2012
+% December, 2012
 
 # NAME
 
