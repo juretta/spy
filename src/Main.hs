@@ -5,7 +5,7 @@ import System.Console.CmdArgs
 import Spy.Watcher
 
 version :: String
-version = "spy v0.2, (C) Stefan Saasen"
+version = "spy v0.3, (C) Stefan Saasen"
 
 
 recurseOpts x = x &= help "Watch the directory recursively (true, default) not only the top level (false)" &= typ "BOOL"
