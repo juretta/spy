@@ -11,6 +11,7 @@ description:        A skeleton for creating haskell packages
 homepage:           https://bitbucket.org/ssaasen/spy
 cabal-version:      >= 1.8
 build-type:         Simple
+extra-source-files: README.md
 
 source-repository   head
   type:             git
@@ -39,5 +40,4 @@ executable  spy
 
   hs-source-dirs:
                     src
-
 
