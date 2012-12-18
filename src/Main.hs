@@ -2,6 +2,7 @@
 module Main where
 
 import System.Console.CmdArgs
+import System.Directory (canonicalizePath)
 import Spy.Watcher
 
 version :: String
@@ -39,6 +40,7 @@ mode = cmdArgsMode $ modes [watch,run]
 main :: IO ()
 main = do
     config <- cmdArgsRun mode
-    spy config
+    canonicalizedDir <- canonicalizePath $ dir config
+    spy config { dir = canonicalizedDir }
     putStrLn "No eyes on the target"
 
