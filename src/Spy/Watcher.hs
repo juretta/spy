@@ -6,6 +6,9 @@ module Spy.Watcher
 ,Format
 ,plainFormat
 ,Spy(..)
+,skipEvent
+,matchesFile
+,containsHiddenPathElement
 ) where
 
 import System.OSX.FSEvents
