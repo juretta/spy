@@ -21,7 +21,7 @@ watch = Watch
     ,format     = Just plainFormat  &= name "f"  &= help "Specify the output format ('json', 'plain')"
     ,glob       = Nothing           &= args &= typ "GLOB"
     }
-    &= help "Watch a directory for file changes"
+    &= help "Watch a directory (or file) for file changes"
     &= auto
 
 run :: Spy
@@ -33,7 +33,7 @@ run = Run
     ,glob       = Nothing       &= args                            &= typ "GLOB"
     ,notifyOnly = False         &= name "n"  &= name "notify-only" &= typ "BOOL"
     }
-    &= help "Run a command whenever a file in a directory changes"
+    &= help "Run a command whenever a file changes"
 
 
 mode :: Mode (CmdArgs Spy)
@@ -47,5 +47,4 @@ main = do
     config <- cmdArgsRun mode
     spy config
     putStrLn "No eyes on the target"
-
 
