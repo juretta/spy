@@ -36,9 +36,6 @@ An optional second argument can be used to filter the files in the given directo
 
     $> spy watch /path/to/directory "*.md"
 
-By default the given directory and all its sub directories will be watched. With `--recursive=false` only the files in the given directory will be watched without recursing into any sub directories.
-
-    $> spy watch --recursive=false .
 
 Run mode
 --------
@@ -53,9 +50,6 @@ If the command to be executed does not expect any (additional) arguments the `--
 
     $> spy run --notify-only "rake test" .
 
-Compiling the spy sources is done using the following invocation:
-
-    $> spy run --notify-only "cabal build" src/ "*.hs"
 
 Installation
 ============

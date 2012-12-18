@@ -30,13 +30,11 @@ data Spy = Watch {
      dir                :: FilePath
     ,glob               :: Maybe GlobPattern
     ,format             :: Maybe Format
-    ,recursive          :: Bool
     ,hidden             :: Bool
 } | Run {
      dir                :: FilePath
     ,command            :: String
     ,glob               :: Maybe GlobPattern
-    ,recursive          :: Bool
     ,hidden             :: Bool
     ,notifyOnly         :: Bool
 } deriving (Data,Typeable,Show,Eq)
@@ -101,7 +99,6 @@ skipEvent config event = skipHidden || skipNonMatchingGlob
 
 matchesFile :: FilePath -> GlobPattern -> Bool
 matchesFile path glob' = takeFileName path ~~ glob'
-
 
 containsHiddenPathElement :: FilePath -> Bool
 containsHiddenPathElement path = any isHidden paths

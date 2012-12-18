@@ -7,16 +7,11 @@ import Spy.Watcher
 version :: String
 version = "spy v0.3, (C) Stefan Saasen"
 
-
-recurseOpts x = x &= help "Watch the directory recursively (true, default) not only the top level (false)" &= typ "BOOL"
-
 hiddenOpts x = x &= help "Set to true if hidden files/directories should be included" &= name "i" &= typ  "BOOL"
-
 
 watch :: Spy
 watch = Watch
-    {recursive  = recurseOpts True
-    ,hidden     = hiddenOpts False
+    {hidden     = hiddenOpts False
     ,dir        = "."               &= argPos 0  &= typ "FILE/DIR"
     ,format     = Just plainFormat  &= name "f"  &= help "Specify the output format ('json', 'plain')"
     ,glob       = Nothing           &= args &= typ "GLOB"
@@ -26,8 +21,7 @@ watch = Watch
 
 run :: Spy
 run = Run
-    {recursive  = recurseOpts True
-    ,hidden     = hiddenOpts False
+    {hidden     = hiddenOpts False
     ,command    = def           &= argPos 0                        &= typ "CMD"
     ,dir        = "."           &= argPos 1                        &= typ "FILE/DIR"
     ,glob       = Nothing       &= args                            &= typ "GLOB"

@@ -18,9 +18,6 @@ Spy is a compact file system watcher for Mac OS X using the File System Events A
 
 spy `watch` supports the following options:
 
--r, \--recursive=*true|false*
-:   If set to `true` (the default) spy reports changes in the given directory and all its descendants. If set to `false` only the changes in the directory itself will be reported.
-
 -i, \--hidden=*true|false*
 :   If set to `false` (the default) hidden directories/files won't be added to the output. Set to `true` to include hidden files/directories.
 
@@ -32,9 +29,6 @@ spy `watch` supports the following options:
 * id: The id of the change event
 
 spy `run` supports the following options:
-
--r, \--recursive=*true|false*
-:   If set to `true` (the default) spy reports changes in the given directory and all its descendants. If set to `false` only the changes in the directory itself will be reported.
 
 -i, \--hidden=*true|false*
 :   If set to `false` (the default) hidden directories/files won't be added to the output. Set to `true` to include hidden files/directories.
