@@ -1,7 +1,7 @@
 Spy
 ===
 
-Spy is a compact file system watcher for Mac OS X using the [File System Events API](https://developer.apple.com/library/mac/#documentation/Darwin/Conceptual/FSEvents_ProgGuide/Introduction/Introduction.html) via [hfsevents](https://github.com/luite/hfsevents).
+Spy is a compact file system watcher for Mac OS X and Linux (Note: Should work on Windows but is currently untested).
 
 
 Usage
@@ -28,7 +28,7 @@ It's possible to watch a single file (this obviously only shows changes to that 
 The default format is the full path to the modified file followed by a newline. To make it easier to parse the output, the `--format=json` changes the output to be printed formatted as a JSON object (again followed by a newline).
 
     $> spy watch --format=json .
-    {"path": "path/to/modified/file", "flags": ["ItemModified"], "id": 123143234}
+    {"path":"/path/to/modified.file","time":"2012-12-20 11:16:03.363614 UTC"}
 
 For directories the following options apply:
 
@@ -54,17 +54,15 @@ If the command to be executed does not expect any (additional) arguments the `--
 Installation
 ============
 
-Spy only works on Mac OS X >= 10.7 (Lion and above)!
-
 Binary distribution
 -------------------
 
-The binary distribution contains a 64bit binary compiled for Mac OS X > 10.7.
+The binary distribution contains a 64bit binary compiled for Mac OS X or Linux.
 
-Download the tarball and run "make install" to copy the binary and the man page into the correct target directories:
+Download the tarball from https://bitbucket.org/ssaasen/spy/downloads and run "make install" to copy the binary and the man page into the correct target directories:
 
-    $> curl -OL https://bitbucket.org/ssaasen/spy/downloads/spy-osx-x86_64-v0.4.tar.gz
-    $> tar xfz spy-osx-x86_64-v0.4.tar.gz
+    $> curl -OL https://bitbucket.org/ssaasen/spy/downloads/spy-PLATFORM-ARCH-VERSION.tar.gz
+    $> tar xfz spy-PLATFORM-ARCH-VERSION.tar.gz
     $> cd spy
     $> make install
 
