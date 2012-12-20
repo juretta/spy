@@ -3,6 +3,7 @@ module Main where
 
 import System.Console.CmdArgs
 import System.Directory (canonicalizePath)
+import System.FilePath (addTrailingPathSeparator)
 import Spy.Watcher
 
 version :: String
@@ -41,6 +42,5 @@ main :: IO ()
 main = do
     config <- cmdArgsRun mode
     canonicalizedDir <- canonicalizePath $ dir config
-    spy config { dir = canonicalizedDir }
+    spy config { dir = addTrailingPathSeparator canonicalizedDir }
     putStrLn "No eyes on the target"
-
