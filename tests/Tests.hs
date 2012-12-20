@@ -4,7 +4,6 @@ module Main (main) where
 
 import qualified Test.HUnit as H
 import Data.Maybe
-import System.OSX.FSEvents
 import Spy.Watcher
 import Test.QuickCheck hiding ((.&.))
 import Test.Framework (Test, defaultMain, testGroup)
@@ -22,7 +21,7 @@ test_globDoesNotMatchFile = H.assertBool
 
 test_skipEventHidden = H.assertBool
   "Skip path if hidden directory and showing hidden files is not enabled"
-  (skipEvent (mockWatch {hidden = False}) (mockEvent "/a/b/.git/refs"))
+  (skipEvent (mockWatch {hidden = False}) "/a/b/.git/refs")
 
 test_containsHiddenPathElement = H.assertBool
   "Should identify hidden directory"
@@ -32,9 +31,7 @@ test_containsHiddenPathElement = H.assertBool
 mockWatch :: Spy
 mockWatch = Watch { dir = ".", glob = Nothing, format = Nothing, hidden = False }
 
-mockEvent :: FilePath -> Event
-mockEvent path = Event path 0x00000001 0x00000001
-------------------------------------------------------------------------
+-- ===========================================================
 -- Test harness
 
 main :: IO ()

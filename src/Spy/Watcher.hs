@@ -48,7 +48,7 @@ plainFormat = Plain
 spy :: Spy -> IO String
 spy config = withManager $ \wm ->
   watchTree wm (decodeString $ dir config)
-              (not . skipEvent config)
+              (not . skipEvent config . eventPath)
               (handleEvent config) >>
   getLine
 
@@ -88,12 +88,11 @@ outputHandler Plain = eventPath
 
 
 -- | Skip events based on the configuration given
-skipEvent :: Spy -> Event -> Bool
-skipEvent config event = skipHidden || skipNonMatchingGlob
+skipEvent :: Spy -> FilePath -> Bool
+skipEvent config path = skipHidden || skipNonMatchingGlob
     where skipHidden            = let includeHiddenfiles = hidden config
                                   in not includeHiddenfiles && containsHiddenPathElement path
           skipNonMatchingGlob   = maybe False (not . matchesFile path) $ glob config
-          path                  = eventPath event
 
 eventTime :: Event -> UTCTime
 eventTime (Added _ t) = t
