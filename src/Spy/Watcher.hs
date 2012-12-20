@@ -47,7 +47,7 @@ plainFormat = Plain
 -- | Register for FS events using the given Spy config.
 spy :: Spy -> IO String
 spy config = withManager $ \wm ->
-  watchDir wm (decodeString $ dir config)
+  watchTree wm (decodeString $ dir config)
               (not . skipEvent config)
               (handleEvent config) >>
   getLine
