@@ -28,7 +28,10 @@ It's possible to watch a single file (this obviously only shows changes to that 
 The default format is the full path to the modified file followed by a newline. To make it easier to parse the output, the `--format=json` changes the output to be printed formatted as a JSON object (again followed by a newline).
 
     $> spy watch --format=json .
-    {"path":"/path/to/modified.file","time":"2012-12-20 11:16:03.363614 UTC"}
+    {"path":"/path/to/modified.file","flag":"Added","time":"2012-12-20 11:26:56.859456 UTC"}
+
+Flag is one of "Added", "Modified", "Removed".
+
 
 For directories the following options apply:
 

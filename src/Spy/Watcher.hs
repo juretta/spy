@@ -83,6 +83,7 @@ type Command = String
 outputHandler :: Format -> Printer
 outputHandler Json  = \event -> encode $ makeObj [
     ("path", showJSON $ eventPath event),
+    ("flag", showJSON $ eventType event),
     ("time", showJSON . show $ eventTime event)]
 outputHandler Plain = eventPath
 
@@ -103,6 +104,11 @@ eventPath :: Event -> FilePath
 eventPath (Added fp _) = encodeString fp
 eventPath (Modified fp _) = encodeString fp
 eventPath (Removed fp _) = encodeString fp
+
+eventType :: Event -> FilePath
+eventType (Added _ _) = "Added"
+eventType (Modified _ _) = "Modified"
+eventType (Removed _ _) = "Removed"
 
 matchesFile :: FilePath -> GlobPattern -> Bool
 matchesFile path glob' = takeFileName path ~~ glob'
