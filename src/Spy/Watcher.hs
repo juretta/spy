@@ -11,18 +11,16 @@ module Spy.Watcher
 ,containsHiddenPathElement
 ) where
 
-import System.OSX.FSEvents
+import System.FSNotify
 import System.Console.CmdArgs
 import System.Cmd
 import System.Exit
 import System.IO (stderr, hPrint)
 import System.FilePath.GlobPattern
 import System.FilePath (splitDirectories, takeFileName)
-import Control.Monad (unless)
-import Control.Exception (bracket)
+import Filesystem.Path.CurrentOS (encodeString, decodeString)
+import Data.Time.Clock(UTCTime)
 import Data.Maybe (fromMaybe, maybeToList)
-import Data.Bits
-import Data.Word
 import Text.JSON
 
 -- | The output format when Spy prints out changes to STDOUT
@@ -48,15 +46,15 @@ plainFormat = Plain
 
 -- | Register for FS events using the given Spy config.
 spy :: Spy -> IO String
-spy config = bracket
-  (eventStreamCreate [dir config] 1.0 True True True $ handleEvent config)
-  eventStreamDestroy
-  (\_ -> getLine)
+spy config = withManager $ \wm ->
+  watchDir wm (decodeString $ dir config)
+              (not . skipEvent config)
+              (handleEvent config) >>
+  getLine
 
 -- | Handle the FS event based on the current Spy run configuration
 handleEvent :: Spy -> Event -> IO ()
-handleEvent config@Run{..} event =
-        unless (skipEvent config event) $
+handleEvent Run{..} event =
         runCommand command pathAsArg >>=
             \exit -> case exit of
                 ExitSuccess     -> return ()
@@ -65,8 +63,7 @@ handleEvent config@Run{..} event =
                             Nothing
                             else Just (eventPath event)
 
-handleEvent config@Watch{..} event =
-        unless (skipEvent config event) $
+handleEvent Watch{..} event =
         putStrLn $ (outputHandler $ fromMaybe Plain format) event
 
 -- =================================================================================
@@ -86,8 +83,7 @@ type Command = String
 outputHandler :: Format -> Printer
 outputHandler Json  = \event -> encode $ makeObj [
     ("path", showJSON $ eventPath event),
-    ("id", showJSON $ eventId event),
-    ("flags", showJSONs $ showEventFlags $ eventFlags event)]
+    ("time", showJSON . show $ eventTime event)]
 outputHandler Plain = eventPath
 
 
@@ -99,6 +95,15 @@ skipEvent config event = skipHidden || skipNonMatchingGlob
           skipNonMatchingGlob   = maybe False (not . matchesFile path) $ glob config
           path                  = eventPath event
 
+eventTime :: Event -> UTCTime
+eventTime (Added _ t) = t
+eventTime (Modified _ t) = t
+eventTime (Removed _ t) = t
+
+eventPath :: Event -> FilePath
+eventPath (Added fp _) = encodeString fp
+eventPath (Modified fp _) = encodeString fp
+eventPath (Removed fp _) = encodeString fp
 
 matchesFile :: FilePath -> GlobPattern -> Bool
 matchesFile path glob' = takeFileName path ~~ glob'
@@ -109,34 +114,3 @@ containsHiddenPathElement path = any isHidden paths
                       isHidden name' = case name' of
                                             (x:_)   -> x == '.'
                                             _       -> False
-
--- =================================================================================
--- The following code is taken from:
--- https://github.com/luite/hfsevents/blob/master/test/trace.hs
--- Copyright (c) 2012, Luite Stegeman
-showEventFlags :: Word64 -> [String]
-showEventFlags fl = map fst . filter hasFlag $ flagList
-  where hasFlag (_,f) = fl .&. f /= 0
-
-
-flagList :: [(String, Word64)]
-flagList = [ ("MustScanSubDirs"   , 0x00000001)
-           , ("UserDropped"       , 0x00000002)
-           , ("KernelDropped"     , 0x00000004)
-           , ("EventIdsWrapped"   , 0x00000008)
-           , ("HistoryDone"       , 0x00000010)
-           , ("RootChanged"       , 0x00000020)
-           , ("Mount"             , 0x00000040)
-           , ("Unmount"           , 0x00000080)
-           , ("ItemCreated"       , 0x00000100)
-           , ("ItemRemoved"       , 0x00000200)
-           , ("ItemInodeMetaMod"  , 0x00000400)
-           , ("ItemRenamed"       , 0x00000800)
-           , ("ItemModified"      , 0x00001000)
-           , ("ItemFinderInfoMod" , 0x00002000)
-           , ("ItemChangeOwner"   , 0x00004000)
-           , ("ItemXattrMod"      , 0x00008000)
-           , ("ItemIsFile"        , 0x00010000)
-           , ("ItemIsDir"         , 0x00020000)
-           , ("ItemIsSymlink"     , 0x00040000)
-           ]
