@@ -6,7 +6,7 @@ import System.Directory (canonicalizePath)
 import Spy.Watcher
 
 version :: String
-version = "spy v0.4, (C) Stefan Saasen"
+version = "spy v0.5, (C) Stefan Saasen"
 
 hiddenOpts x = x &= help "Set to true if hidden files/directories should be included" &= name "i" &= typ  "BOOL"
 
