@@ -4,8 +4,8 @@ license:            BSD3
 license-file:       LICENSE
 author:             Stefan Saasen
 maintainer:         stefan@saasen.me
-synopsis:           A compact file system watcher for Mac OS X
-category:           Apple, Development
+synopsis:           A compact file system watcher for Mac OS X, Linux and Windows
+category:           Development
 description:        Spy can be used to watch for file changes and to either report the modified files or run a command if files change. It can be used to trigger compilation, to run tests or start a deployment.
 homepage:           https://bitbucket.org/ssaasen/spy
 bug-reports:        https://bitbucket.org/ssaasen/spy/issues
