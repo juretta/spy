@@ -27,11 +27,11 @@ task :compile do
 end
 
 desc "Build and package the spy distribution"
-task :package => [:build, :generate_man] do
+task :package => [:build, :generate_man, :contributors] do
   include FileUtils
   with_temp_dir "spy" do |package_dir|
     cp "README.md", package_dir
-    %w(LICENSE).each {|f| cp f, package_dir }
+    %w(LICENSE CONTRIBUTORS).each {|f| cp f, package_dir }
     bin_dir = File.join(package_dir, "bin")
     mkdir bin_dir
     cp ARTIFACT, bin_dir
@@ -61,6 +61,17 @@ desc "Run the tests"
 task :test do
   ["clean", "install --only-dependencies --enable-tests", "configure --enable-tests", "build", "test"].each do |cmd|
     cabal cmd
+  end
+end
+
+desc "Update CONTRIBUTORS file"
+task :contributors do
+  File.open("CONTRIBUTORS", "w") do |f|
+    `git shortlog -s -n`.split("\n").each do |line|
+      n, name = line.split("\t")
+      f << name
+      f << "\n"
+    end
   end
 end
 
