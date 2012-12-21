@@ -96,7 +96,7 @@ skipEvent config path = skipHidden || skipNonMatchingGlob
                                   in not includeHiddenfiles && containsHiddenPathElement relPath
           skipNonMatchingGlob   = maybe False (not . matchesFile path) $ glob config
           relPath = encodeString . fromJust $ stripPrefix prefix (decodeString path)
-          prefix = commonPrefix (map decodeString [(dir config), path])
+          prefix = commonPrefix (map decodeString [dir config, path])
 
 eventTime :: Event -> UTCTime
 eventTime (Added _ t) = t
