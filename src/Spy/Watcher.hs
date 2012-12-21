@@ -18,9 +18,10 @@ import System.Exit
 import System.IO (stderr, hPrint)
 import System.FilePath.GlobPattern
 import System.FilePath (splitDirectories, takeFileName)
-import Filesystem.Path.CurrentOS (encodeString, decodeString)
+import Filesystem.Path.CurrentOS
+  (encodeString, decodeString, commonPrefix, stripPrefix)
 import Data.Time.Clock(UTCTime)
-import Data.Maybe (fromMaybe, maybeToList)
+import Data.Maybe (fromMaybe, maybeToList, fromJust)
 import Text.JSON
 
 -- | The output format when Spy prints out changes to STDOUT
@@ -92,8 +93,10 @@ outputHandler Plain = eventPath
 skipEvent :: Spy -> FilePath -> Bool
 skipEvent config path = skipHidden || skipNonMatchingGlob
     where skipHidden            = let includeHiddenfiles = hidden config
-                                  in not includeHiddenfiles && containsHiddenPathElement path
+                                  in not includeHiddenfiles && containsHiddenPathElement relPath
           skipNonMatchingGlob   = maybe False (not . matchesFile path) $ glob config
+          relPath = encodeString . fromJust $ stripPrefix prefix (decodeString path)
+          prefix = commonPrefix (map decodeString [(dir config), path])
 
 eventTime :: Event -> UTCTime
 eventTime (Added _ t) = t
