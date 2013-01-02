@@ -52,6 +52,10 @@ In the example above the shell script `run-build.sh` would be executed with the 
 If the command to be executed does not expect any (additional) arguments the `--notify-only` flag can be used. This will cause spy to execute the command without passing the path as an argument:
 
     $> spy run --notify-only "rake test" .
+    
+To compile Spy for example use:
+
+    $> spy run -n "cabal build" src
 
 
 Installation
