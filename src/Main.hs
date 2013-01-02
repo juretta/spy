@@ -27,7 +27,7 @@ run = Run
     ,command    = def           &= argPos 0                        &= typ "CMD"
     ,dir        = "."           &= argPos 1                        &= typ "FILE/DIR"
     ,glob       = Nothing       &= args                            &= typ "GLOB"
-    ,notifyOnly = False         &= name "n"  &= name "notify-only" &= typ "BOOL"
+    ,notifyOnly = False         &= name "n"  &= name "notify-only" &= typ "BOOL" &= help "Don't pass the path of the modified file to the command"
     }
     &= help "Run a command whenever a file changes"
 
