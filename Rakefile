@@ -11,8 +11,9 @@ task :clean do
 end
 
 desc "Create the spy binary"
-task :build => [:setup, :clean, :compile]
+task :build => [:clean, :compile]
 
+desc "Install required dependencies"
 task :setup do
   ["install --only-dependencies"].each do |cmd|
     cabal cmd
