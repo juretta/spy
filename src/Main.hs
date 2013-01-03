@@ -9,11 +9,9 @@ import Spy.Watcher
 version :: String
 version = "spy v0.6, (C) Stefan Saasen"
 
-hiddenOpts x = x &= help "Set to true if hidden files/directories should be included" &= name "i" &= typ  "BOOL"
-
 watch :: Spy
 watch = Watch
-    {hidden     = hiddenOpts False
+    {hidden     = False             &= help "Set to true if hidden files/directories should be included" &= name "i" &= typ  "BOOL"
     ,dir        = "."               &= argPos 0  &= typ "FILE/DIR"
     ,format     = Just plainFormat  &= name "f"  &= help "Specify the output format ('json', 'plain')"
     ,glob       = Nothing           &= args &= typ "GLOB"
@@ -23,7 +21,7 @@ watch = Watch
 
 run :: Spy
 run = Run
-    {hidden     = hiddenOpts False
+    {hidden     = False         &= help "Set to true if hidden files/directories should be included" &= name "i" &= typ  "BOOL"
     ,command    = def           &= argPos 0                        &= typ "CMD"
     ,dir        = "."           &= argPos 1                        &= typ "FILE/DIR"
     ,glob       = Nothing       &= args                            &= typ "GLOB"
