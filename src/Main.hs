@@ -7,7 +7,7 @@ import System.FilePath (addTrailingPathSeparator)
 import Spy.Watcher
 
 version :: String
-version = "spy v0.6, (C) Stefan Saasen"
+version = "spy v0.7, (C) Stefan Saasen"
 
 watch :: Spy
 watch = Watch
